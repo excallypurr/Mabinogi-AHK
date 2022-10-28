@@ -13,6 +13,7 @@
 ;AHK settings/parameters
 #NoEnv
 #SingleInstance, Force
+#MaxThreads, 3
 
 SetBatchLines -1
 SetTitleMatchMode 2
@@ -60,7 +61,7 @@ if %windowID%
 }
 else
 {
-GUI, Add, Text, w380 Center cRed, You have not selected a window yet!`nPlease hover over the Mabinogi window with your mouse cursor and press ctrl+w.
+GUI, Add, Text, w380 +Center cRed, You have not selected a window yet!`nPlease hover over the Mabinogi window with your mouse cursor and press ctrl+w.
 }
 GUI, Margin, 5, 5
 GUI, Show, w400 NoActivate, %windowTitle%
@@ -81,6 +82,7 @@ aboutMenu:
 toolSelector(scriptName, windowID, runningProcessArray, menuIndex)
 {
     ;GUI, Hide
+    MsgBox, ID %windowID%
     Run %A_WorkingDir%/Resources/Scripts/%scriptName%.ahk %windowID%, WorkingDir, ,runningPID
     if !runningProcessArray.HasKey(runningPID)
     {
@@ -94,9 +96,9 @@ toolSelector(scriptName, windowID, runningProcessArray, menuIndex)
 
 SelectWindow:
 {
-    MouseGetPos, , ,windowID, control
+    MouseGetPos, , ,windowID, windowHWND, 2
     WinGetTitle, targetWindowTitle, ahk_id %windowID%
-    MsgBox, You have selected the %targetWindowTitle% window`nIts ID is %windowID%
+    MsgBox, You have selected the %targetWindowTitle% window`nIts ID is %windowID%`nThe HWND is %windowHWND%
     GUI, Destroy
     gosub mainMenu
     return
